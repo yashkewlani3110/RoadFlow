@@ -55,7 +55,7 @@ while True:
     tracks, _ = tracker.update(lp_detections_xywh.cpu().numpy(), confidences.cpu().numpy(), rgb_frame)
 
     # Loop over tracks 
-   for track in tracks:
+    for track in tracks:
        # Get track id 
        track_id = track.track_id
 
@@ -76,13 +76,13 @@ while True:
            cv2.rectangle(frame, (x1,y1), (x2,y2), (0,255,0), 3)
            cv2.putText(frame,f'{text} ({confidence:.2f})', (x1,y1-10), cv2.FONT_HERSHEY_SIMPLEX ,0.8,(255,255,255),3,cv.LINE_AA) 
 
-   # Show frame 
-   cv2.imshow('frame',frame)
+    # Show frame 
+    cv2.imshow('frame',frame)
 
-   # Wait for key press 
-   key=cv.waitKey(30) &amp; OxFF
+    # Wait for key press 
+    key=cv2.waitKey(30) & 0xFF
 
-   if key==27: break
+    if key==27: break
 
 cap.release()
-cv.destroyAllWindows()
+cv2.destroyAllWindows()
