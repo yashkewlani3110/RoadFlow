@@ -3,16 +3,16 @@ import torch
 import numpy as np
 import sys
 sys.path.append('/Users/yashkewlani/Documents/Roadflow/yolov8_tracking')
-from trackers.strongsort.sort.tracker import StrongSort
+from trackers.strongsort.sort.tracker import Tracker
 from trackers.strongsort.utils.parser import get_config
 from trackers.strongsort.utils.draw import draw_boxes
 from yolov5.models.experimental import attempt_load
-from yolov5.utils.general import non_max_suppression, scale_coords
+from yolov5.utils.general import non_max_suppression, scale_segments
 from yolov5.utils.torch_utils import select_device
 
 # Load YOLOv5 model
 device = select_device()
-model = attempt_load('yolov5s.pt', map_location=device)
+model = attempt_load('yolov5s.pt', device=device)
 model.conf = 0.4
 model.iou = 0.5
 model.classes = None
@@ -20,8 +20,8 @@ model.names = model.module.names if hasattr(model, 'module') else model.names
 
 # Initialize DeepSORT
 cfg = get_config()
-cfg.merge_from_file('yolov8_tracking/configs/strongsort.yaml')
-strongsort = StrongSort(cfg.STRONGSORT.REID_CKPT, max_dist=cfg.STRONGSORT.MAX_DIST, min_confidence=cfg.STRONGSORT.MIN_CONFIDENCE, nms_max_overlap=cfg.STRONGSORT.NMS_MAX_OVERLAP, max_iou_distance=cfg.STRONGSORT.MAX_IOU_DISTANCE, max_age=cfg.STRONGSORT.MAX_AGE, n_init=cfg.STRONGSORT.N_INIT, nn_budget=cfg.STRONGSORT.NN_BUDGET, use_cuda=True)
+cfg.merge_from_file('/Users/yashkewlani/Documents/Roadflow/yolov8_tracking/trackers/strongsort/configs/strongsort.yaml')
+strongsort = Tracker(cfg['strongsort']['REID_CKPT'], max_iou_dist=cfg['strongsort']['max_iou_dist'], max_age=cfg['strongsort']['max_age'], n_init=cfg['strongsort']['n_init'], use_cuda=True)
 
 # Initialize video capture
 cap = cv2.VideoCapture(0)
@@ -50,7 +50,7 @@ while cap.isOpened():
 
     for det in pred:
         if det is not None and len(det):
-            det[:, :4] = scale_coords(img.shape[2:], det[:, :4], frame.shape).round()
+            det[:, :4] = scale_segments(img.shape[2:], det[:, :4], frame.shape).round()
 
             # Extract bounding boxes for vehicles (car: 2, truck: 7)
             for *xyxy, conf, cls in det:
