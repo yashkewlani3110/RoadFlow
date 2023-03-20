@@ -1,9 +1,11 @@
 import cv2
 import torch
 import numpy as np
-from deep_sort_pytorch.deep_sort import DeepSort
-from deep_sort_pytorch.utils.parser import get_config
-from deep_sort_pytorch.utils.draw import draw_boxes
+import sys
+sys.path.append('/Users/yashkewlani/Documents/Roadflow/yolov8_tracking')
+from trackers.strongsort.sort.tracker import StrongSort
+from trackers.strongsort.utils.parser import get_config
+from trackers.strongsort.utils.draw import draw_boxes
 from yolov5.models.experimental import attempt_load
 from yolov5.utils.general import non_max_suppression, scale_coords
 from yolov5.utils.torch_utils import select_device
@@ -18,8 +20,8 @@ model.names = model.module.names if hasattr(model, 'module') else model.names
 
 # Initialize DeepSORT
 cfg = get_config()
-cfg.merge_from_file('deep_sort_pytorch/configs/deep_sort.yaml')
-deepsort = DeepSort(cfg.DEEPSORT.REID_CKPT, max_dist=cfg.DEEPSORT.MAX_DIST, min_confidence=cfg.DEEPSORT.MIN_CONFIDENCE, nms_max_overlap=cfg.DEEPSORT.NMS_MAX_OVERLAP, max_iou_distance=cfg.DEEPSORT.MAX_IOU_DISTANCE, max_age=cfg.DEEPSORT.MAX_AGE, n_init=cfg.DEEPSORT.N_INIT, nn_budget=cfg.DEEPSORT.NN_BUDGET, use_cuda=True)
+cfg.merge_from_file('yolov8_tracking/configs/strongsort.yaml')
+strongsort = StrongSort(cfg.STRONGSORT.REID_CKPT, max_dist=cfg.STRONGSORT.MAX_DIST, min_confidence=cfg.STRONGSORT.MIN_CONFIDENCE, nms_max_overlap=cfg.STRONGSORT.NMS_MAX_OVERLAP, max_iou_distance=cfg.STRONGSORT.MAX_IOU_DISTANCE, max_age=cfg.STRONGSORT.MAX_AGE, n_init=cfg.STRONGSORT.N_INIT, nn_budget=cfg.STRONGSORT.NN_BUDGET, use_cuda=True)
 
 # Initialize video capture
 cap = cv2.VideoCapture(0)
@@ -57,7 +59,7 @@ while cap.isOpened():
                     bboxes.append([x1, y1, x2, y2, conf, conf, cls])
 
     # Apply DeepSORT
-    outputs = deepsort.update(bboxes, frame)
+    outputs = strongsort.update(bboxes, frame)
 
     # Draw tracking information
     if len(outputs) > 0:
