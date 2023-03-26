@@ -6,7 +6,7 @@ import easyocr
 from sort import Sort
 
 # Load custom-trained YOLOv5 model
-model_path = "Users/yashkewlani/Documents/Roadflow/best.pt"  # Replace this with the path to your best.pt file
+model_path = "Users/yashkewlani/Documents/Roadflow/best.pt"
 model = torch.hub.load('ultralytics/yolov5', 'custom', path=model_path)
 
 # Initialize SORT tracker
