@@ -6,8 +6,8 @@ import easyocr
 from sort import Sort
 
 # Load custom-trained YOLOv5 model
-model_path = "Users/yashkewlani/Documents/Roadflow/best.pt"
-model = torch.hub.load('ultralytics/yolov5', 'custom', path=model_path)
+model_path = "/Users/yashkewlani/Documents/Roadflow/best.pt"
+model = torch.hub.load('https://github.com/ultralytics/yolov5/archive/v5.0.zip', 'custom', path=model_path)
 
 # Initialize SORT tracker
 tracker = Sort()
@@ -19,7 +19,7 @@ reader = easyocr.Reader(['en'])
 lp_class_id = 2
 
 # Define video source (can be a file or a camera)
-video_source = 'video.mp4'
+video_source = '/Users/yashkewlani/Downloads/output_video.mp4'
 
 # Open video capture
 cap = cv2.VideoCapture(video_source)
