@@ -7,7 +7,7 @@ from sort import Sort
 
 # Load custom-trained YOLOv5 model
 model_path = "/Users/yashkewlani/Documents/Roadflow/best.pt"
-model = torch.hub.load('https://github.com/ultralytics/yolov5/archive/v5.0.zip', 'custom', path=model_path)
+model = torch.hub.load('ultralytics/yolov5', 'custom', path=model_path, force_reload=True) 
 
 # Initialize SORT tracker
 tracker = Sort()
